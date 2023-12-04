@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>MCQ Quiz</title>
+</head>
+<body>
+    <div class="header">
+        <nav class="navbar">
+            <span class="title">Quiz Title</span>
+        </nav>
+    </div>
+
+    <div class="quiz-container">
+        <div class="question-container">
+            <div class="question-header">
+                <span class="question-number">Question 1</span>
+                <span class="timer" id="timer">Time: 00:00</span>
+            </div>
+            <div class="question-content">
+                <!-- Question content will be dynamically loaded here -->
+            </div>
+            <div class="options">
+                <!-- Options will be dynamically loaded here -->
+                <button onclick="showAnswer()">Show Answer</button>
+            </div>
+            <div class="answer" id="answer">
+                <!-- Answer will be dynamically loaded here -->
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button onclick="previousQuestion()">Previous Question</button>
+            <button onclick="nextQuestion()">Next Question</button>
+        </div>
+    </div>
+<p class="radio">
+  awsf
+  </p>
+    <script src="quiz.js"></script>
+</body>
+</html>
