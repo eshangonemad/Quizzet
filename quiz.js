@@ -5,6 +5,8 @@ const jsonData = {
         {
             "question": "What is ABC?",
             "image": "https://preview.redd.it/biology-mcq-can-someone-explain-v0-w2ooqpd3624b1.jpg?width=640&crop=smart&auto=webp&s=cbc305bb656e759961c21ab4333a8f17f936c038",
+            "imageHeight": 200,
+            "imageWidth": 300,
             "subtitle": "Choose the correct option",
             "A": "Option A",
             "B": "Option B",
@@ -60,6 +62,8 @@ function loadQuestion() {
     if (currentQuestionData.image) {
         imageElement.src = currentQuestionData.image;
         imageElement.alt = `Image for Question ${currentQuestion + 1}`;
+        imageElement.style.height = `${currentQuestionData.imageHeight}px`; // Set height
+        imageElement.style.width = `${currentQuestionData.imageWidth}px`;  // Set width
         questionContent.innerHTML = ''; // Clear existing content
         questionContent.appendChild(imageElement);
     } else {
