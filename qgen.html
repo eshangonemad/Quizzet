@@ -84,7 +84,7 @@
 
     <div id="imageFields">
         <label for="imageUrl">Image URL:</label>
-        <input type="text" id="imageUrl" placeholder="Enter image URL">
+        <input type="text" id="imageUrl" placeholder="Paste image or enter URL">
         <br>
 
         <label for="imageWidth">Image Width:</label>
@@ -211,6 +211,21 @@
             const jsonCodeTextarea = document.getElementById('jsonCode');
             jsonCodeTextarea.value = JSON.stringify(quizData, null, 2);
         }
+
+        document.getElementById('imageUrl').addEventListener('paste', function (event) {
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (const item of items) {
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('imageUrl').value = e.target.result;
+                    };
+                    reader.readAsDataURL(blob);
+                    break;
+                }
+            }
+        });
     </script>
 
 </body>
