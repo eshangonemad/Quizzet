@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f7f7f7;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+
+        hr {
+            border: 1px solid #ddd;
+        }
+
+        #imageFields {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Quiz Generator</h1>
+
+    <label for="quizTitle">Quiz Title:</label>
+    <input type="text" id="quizTitle" placeholder="Enter quiz title">
+    <br>
+
+    <button onclick="setTitle()">Set Title</button>
+    <hr>
+
+    <h2>Add Questions</h2>
+
+    <label for="question">Question:</label>
+    <input type="text" id="question" placeholder="Enter question text">
+    <br>
+
+    <label for="subtitle">Subtitle:</label>
+    <input type="text" id="subtitle" placeholder="Enter subtitle">
+    <br>
+
+    <label>
+        <input type="checkbox" id="imageCheckbox" onchange="toggleImageFields()">
+        Image Present
+    </label>
+    <br>
+
+    <div id="imageFields">
+        <label for="imageUrl">Image URL:</label>
+        <input type="text" id="imageUrl" placeholder="Paste image or enter URL">
+        <br>
+
+        <label for="imageWidth">Image Width:</label>
+        <input type="number" id="imageWidth" placeholder="Enter image width">
+        <br>
+
+        <label for="imageHeight">Image Height:</label>
+        <input type="number" id="imageHeight" placeholder="Enter image height">
+        <br>
+    </div>
+
+    <label for="optionA">Option A:</label>
+    <input type="text" id="optionA" placeholder="Enter option A">
+    <br>
+
+    <label for="optionB">Option B:</label>
+    <input type="text" id="optionB" placeholder="Enter option B">
+    <br>
+
+    <label for="optionC">Option C:</label>
+    <input type="text" id="optionC" placeholder="Enter option C">
+    <br>
+
+    <label for="optionD">Option D:</label>
+    <input type="text" id="optionD" placeholder="Enter option D">
+    <br>
+
+    <label for="answer">Correct Answer:</label>
+    <select id="answer">
+        <option value="A">A</option>
+        <option value="B">B</option>
+        <option value="C">C</option>
+        <option value="D">D</option>
+    </select>
+    <br>
+
+    <label for="reason">Reason:</label>
+    <input type="text" id="reason" placeholder="Enter reason">
+    <br>
+
+    <button onclick="addQuestion()">Add Question</button>
+    <button onclick="generateCode()">Generate Code</button>
+    <hr>
+
+    <h2>Generated HTML Code</h2>
+    <textarea id="jsonCode" readonly></textarea>
+
+    <script>
+        let quizData = {
+            quizTitle: "",
+            questions: []
+        };
+
+        function setTitle() {
+            const titleInput = document.getElementById('quizTitle');
+            quizData.quizTitle = titleInput.value;
+        }
+
+        function toggleImageFields() {
+            const imageFields = document.getElementById('imageFields');
+            imageFields.style.display = document.getElementById('imageCheckbox').checked ? 'block' : 'none';
+        }
+
+        function addQuestion() {
+            const questionInput = document.getElementById('question').value;
+            const subtitleInput = document.getElementById('subtitle').value;
+            const imageUrlInput = document.getElementById('imageUrl').value;
+            const imageWidthInput = document.getElementById('imageWidth').value;
+            const imageHeightInput = document.getElementById('imageHeight').value;
+            const optionAInput = document.getElementById('optionA').value;
+            const optionBInput = document.getElementById('optionB').value;
+            const optionCInput = document.getElementById('optionC').value;
+            const optionDInput = document.getElementById('optionD').value;
+            const answerInput = document.getElementById('answer').value;
+            const reasonInput = document.getElementById('reason').value;
+
+            const question = {
+                question: questionInput,
+                subtitle: subtitleInput,
+                A: optionAInput,
+                B: optionBInput,
+                C: optionCInput,
+                D: optionDInput,
+                Answer: answerInput,
+                reason: reasonInput
+            };
+
+            if (document.getElementById('imageCheckbox').checked) {
+                question.image = imageUrlInput;
+                question.imageWidth = imageWidthInput;
+                question.imageHeight = imageHeightInput;
+            }
+
+            quizData.questions.push(question);
+            clearInputs();
+            updateJsonCode();
+        }
+
+        function clearInputs() {
+            document.getElementById('question').value = '';
+            document.getElementById('subtitle').value = '';
+            document.getElementById('imageUrl').value = '';
+            document.getElementById('imageWidth').value = '';
+            document.getElementById('imageHeight').value = '';
+            document.getElementById('optionA').value = '';
+            document.getElementById('optionB').value = '';
+            document.getElementById('optionC').value = '';
+            document.getElementById('optionD').value = '';
+            document.getElementById('answer').value = 'A';
+            document.getElementById('reason').value = '';
+            document.getElementById('imageCheckbox').checked = false;
+            document.getElementById('imageFields').style.display = 'none';
+        }
+
+        function generateCode() {
+            updateJsonCode();
+            const jsonCodeTextarea = document.getElementById('jsonCode');
+            jsonCodeTextarea.select();
+          console.log(jsonCodeTextarea.innerHTML)
+            document.execCommand('copy');
+            alert('HTML code copied to clipboard!');
+        }
+
+        function updateJsonCode() {
+            const jsonCodeTextarea = document.getElementById('jsonCode');
+            jsonCodeTextarea.value =`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>AceTheExams - Quizzetter</title>
+  
+  <style>
+    body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+}
+
+.header {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    height:1px; 
+}
+
+.title {
+    text-align: center; 
+    font-size: 15px; 
+}
+
+.quiz-container {
+    max-width: 800px;
+    margin: 0 auto; 
+    padding: 2px;
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.question-container {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 2px;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.question-number {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.timer {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.question-content {
+    margin-bottom: 20px;
+}
+
+.options label {
+    display: block;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+}
+
+.options input:checked + label {
+    background-color: #ddd; 
+}
+
+button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.answer {
+    display: none;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.summary {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    display: none;
+}
+
+.summary h2 {
+    color: #3498db;
+}
+  </style>
+
+  </head>
+<body>
+    <div class="header">
+        <nav class="navbar">
+            <span class="title">Quiz Title</span>
+        </nav>
+    </div>
+
+    <div class="quiz-container">
+        <div class="question-container">
+            <div class="question-header">
+                <span class="question-number">Question 1</span>
+              <span class="correct"></span>
+                <span class="timer" id="timer">Time: 00:00</span>
+            </div>
+            <div class="question-content">
+            </div>
+            <div class="options">
+                <p id="stats"></p>
+              <button onclick="showAnswer()">Show Answer</button>
+            </div>
+            <div class="answer" id="answer">
+            </div>
+        </div>
+
+        <div class="navigation"><center>
+            <button onclick="previousQuestion()">Previous Question</button>
+            <button onclick="nextQuestion()">Next Question</button>
+          </center></div>
+    </div>
+  <script>
+
+
+const jsonData =
+    `+ JSON.stringify(quizData, null, 2)+';document.querySelector(".title").innerText = jsonData.quizTitle;const quizData = jsonData.questions;let currentQuestion = 0;const totalQuestions = quizData.length;let timer;function loadQuestion() {    const currentQuestionData = quizData[currentQuestion];    const questionContent = document.querySelector(".question-content");    const imageElement = document.createElement("img");        document.querySelector(".question-number").innerText = `Question ${currentQuestion + 1} / ${quizData.length}`;    document.querySelector(".timer").innerText = "Time: 00:00";     document.getElementById("answer").style.display = "none";    if (currentQuestionData.image) {        imageElement.src = currentQuestionData.image;        imageElement.alt = `Image for Question ${currentQuestion + 1}`;        imageElement.style.height = `${currentQuestionData.imageHeight}px`;        imageElement.style.width = `${currentQuestionData.imageWidth}px`;          questionContent.innerHTML = "";         questionContent.appendChild(imageElement);    } else {        questionContent.innerHTML = "";     }    questionContent.innerHTML += `        <p>${currentQuestionData.question}</p>        <p>${currentQuestionData.subtitle}</p>        <label><button onclick="if (${currentQuestionData.Answer}==document.getElementById("A")){document.getElementById("stats").innerHTML="Correct Answer";document.getElementById("stats").style.color="green"}else{document.getElementById("stats").innerHTML="Wrong Answer";document.getElementById("stats").style.color="red"}"style="margin:2px;padding:10px;border-radius:10px;background-color:#5270ff;" id="A" value="A">A</button>${currentQuestionData.A}</label><br>        <label><button onclick="if (${currentQuestionData.Answer}==document.getElementById("B")){document.getElementById("stats").innerHTML="Correct Answer";document.getElementById("stats").style.color="green"}else{document.getElementById("stats").innerHTML="Wrong Answer";document.getElementById("stats").style.color="red"}"style="margin:2px;padding:10px;border-radius:10px;background-color:#5270ff;"  id="B" value="B" >B</button>${currentQuestionData.B}</label><br>        <label><button onclick="if (${currentQuestionData.Answer}==document.getElementById("C")){document.getElementById("stats").innerHTML="Correct Answer";document.getElementById("stats").style.color="green"}else{document.getElementById("stats").innerHTML="Wrong Answer";document.getElementById("stats").style.color="red"}"style="margin:2px;padding:10px;border-radius:10px;background-color:#5270ff;" id="C" value="C">C</button>${currentQuestionData.C}</label><br>        <label><button onclick="if (${currentQuestionData.Answer}==document.getElementById("D")){document.getElementById("stats").innerHTML="Correct Answer";document.getElementById("stats").style.color="green"}else{document.getElementById("stats").innerHTML="Wrong Answer";document.getElementById("stats").style.color="red"}"style="margin:2px;padding:10px;border-radius:10px;background-color:#5270ff;" id="D" value="D">D</button>${currentQuestionData.D}</label><br>    `;    document.querySelector(".answer").innerText= `Answer: ${currentQuestionData.reason}`;}function nextQuestion() {    document.getElementById("answer").style.display = "none";  document.getElementById("stats").innerHTML=" "    ;currentQuestion++;    if (currentQuestion < totalQuestions) {        loadQuestion();    } else {        alert("MCQ Completed!");    }}function previousQuestion() {    currentQuestion--;    if (currentQuestion >= 0) {        loadQuestion();    } else {        alert("This is the first question");        currentQuestion = 0;    }}function showAnswer() {    const answerDiv = document.getElementById("answer");    answerDiv.style.display = answerDiv.style.display === "none" ? "block" : "none";}loadQuestion();timer = setInterval(updateTimer, 1000);let seconds = 0;function updateTimer() {    seconds++;    const minutes = Math.floor(seconds / 60);    const remainingSeconds = seconds % 60;    document.getElementById("timer").innerText = `Time: ${formatTime(minutes)}:${formatTime(remainingSeconds)}`;}function formatTime(time) {    return time < 10 ? `0${time}` : time;}</script'+'></body'+'></html'+'>'
+        }
+
+        document.getElementById('imageUrl').addEventListener('paste', function (event) {
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (const item of items) {
+                if (item.kind === 'file' && item.type.startsWith('image/')) {
+                    const blob = item.getAsFile();
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('imageUrl').value = e.target.result;
+                    };
+                    reader.readAsDataURL(blob);
+                    break;
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
